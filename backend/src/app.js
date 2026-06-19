@@ -3,14 +3,21 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const { CLIENT_URL, NODE_ENV } = require('./config/env');
+const { CLIENT_URLS, NODE_ENV } = require('./config/env');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({
-  origin: "*",
+  origin(origin, callback) {
+    // Non-browser clients have no Origin. In local development, keep the
+    // existing convenience of accepting localhost tools on any port.
+    if (!origin || CLIENT_URLS.includes(origin) || (NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS origin not allowed'));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));

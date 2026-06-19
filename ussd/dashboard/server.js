@@ -5,12 +5,16 @@
  * origin (no CORS, works behind tunnels/preview too).
  */
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+require('../backend/lib/env').loadEnv();
 
 const PORT = parseInt(process.env.USSD_DASHBOARD_PORT, 10) || 6002;
-const BACKEND_HOST = process.env.USSD_BACKEND_HOST || 'localhost';
-const BACKEND_PORT = parseInt(process.env.USSD_BACKEND_PORT, 10) || 6000;
+const BACKEND_URL = new URL(process.env.USSD_BACKEND_URL || `http://${process.env.USSD_BACKEND_HOST || 'localhost'}:${process.env.USSD_BACKEND_PORT || 6000}`);
+const BACKEND_HOST = BACKEND_URL.hostname;
+const BACKEND_PORT = Number(BACKEND_URL.port || (BACKEND_URL.protocol === 'https:' ? 443 : 80));
+const SIMULATOR_URL = process.env.USSD_SIMULATOR_URL || 'http://localhost:6001';
 const ROOT = __dirname;
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -19,11 +23,14 @@ const MIME = {
 };
 
 function proxy(req, res) {
+  const transport = BACKEND_URL.protocol === 'https:' ? https : http;
+  const basePath = BACKEND_URL.pathname.replace(/\/$/, '');
   const opts = {
-    host: BACKEND_HOST, port: BACKEND_PORT, path: req.url, method: req.method,
-    headers: { ...req.headers, host: `${BACKEND_HOST}:${BACKEND_PORT}` },
+    protocol: BACKEND_URL.protocol, hostname: BACKEND_HOST, port: BACKEND_PORT,
+    path: `${basePath}${req.url}`, method: req.method,
+    headers: { ...req.headers, host: BACKEND_URL.host },
   };
-  const pr = http.request(opts, (br) => { res.writeHead(br.statusCode, br.headers); br.pipe(res); });
+  const pr = transport.request(opts, (br) => { res.writeHead(br.statusCode, br.headers); br.pipe(res); });
   pr.on('error', () => {
     res.writeHead(502, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: false, error: `USSD backend (:${BACKEND_PORT}) not reachable. Start it: node backend/server.js` }));
@@ -41,6 +48,7 @@ http.createServer((req, res) => {
   if (!file.startsWith(ROOT)) { res.writeHead(403); return res.end('Forbidden'); }
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }
+    if (p === '/index.html') data = Buffer.from(data.toString('utf8').replaceAll('__USSD_SIMULATOR_URL__', SIMULATOR_URL));
     res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] || 'application/octet-stream' });
     res.end(data);
   });

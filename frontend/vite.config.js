@@ -1,9 +1,12 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { VitePWA } from 'vite-plugin-pwa';
 import { fileURLToPath, URL } from 'node:url';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+  const devApiProxy = env.VITE_DEV_API_PROXY || 'http://localhost:5000';
+  return ({
   plugins: [
     vue(),
     VitePWA({
@@ -46,7 +49,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': { target: 'http://localhost:5000', changeOrigin: true },
+      '/api': { target: devApiProxy, changeOrigin: true },
     },
   },
+  });
 });

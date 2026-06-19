@@ -1,10 +1,14 @@
 require('dotenv').config();
 
+const clientUrls = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',').map(value => value.trim()).filter(Boolean);
+
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT) || 5000,
   MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/movexa',
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
+  CLIENT_URLS: clientUrls,
   JWT_SECRET: process.env.JWT_SECRET || 'movexa-dev-secret',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
 

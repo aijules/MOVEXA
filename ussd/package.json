@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "start": "node start-all.js",
+    "dev": "node start-all.js",
+    "build": "node scripts/build.js",
     "backend": "node backend/server.js",
     "simulator": "node simulator/server.js",
     "dashboard": "node dashboard/server.js"
