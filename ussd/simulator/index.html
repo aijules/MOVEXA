@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOVEXA · USSD Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 44 44" fill="none">
+          <path d="M9 33V14.5L22 26.5L35 14.5V33" stroke="white" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9" cy="12" r="3.6" fill="white"/><circle cx="35" cy="12" r="3.6" fill="white"/>
+        </svg>
+      </span>
+      <div>
+        <div class="brand-title">MOVEXA</div>
+        <div class="brand-sub">USSD Simulator · Feature-phone access</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="pill" id="backendPill"><span class="dot"></span> Backend :6000</span>
+      <a class="link" href="http://localhost:6002" target="_blank">Open Dashboard ↗</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ── Phone device ── -->
+    <section class="phone-col">
+      <div class="phone" id="phone">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span id="statusCarrier">MOVEXA SIM</span>
+          <span class="status-icons">▋▋▋▋ <span id="statusClock">--:--</span> 🔋</span>
+        </div>
+
+        <div class="screen" id="screen">
+          <!-- IDLE -->
+          <div class="screen-idle" id="screenIdle">
+            <div class="idle-clock" id="idleClock">07:30</div>
+            <div class="idle-loc">Kigali · Rwanda</div>
+            <div class="idle-dial" id="idleDial"></div>
+            <div class="idle-hint" id="idleHint">Dial a USSD code to begin</div>
+          </div>
+          <!-- CONNECTING -->
+          <div class="screen-connecting hidden" id="screenConnecting">
+            <div class="conn-dots"><span></span><span></span><span></span></div>
+            <div class="conn-label">USSD code running…</div>
+          </div>
+          <!-- USSD POPUP -->
+          <div class="screen-popup hidden" id="screenPopup">
+            <div class="popup">
+              <div class="popup-head">
+                <span id="popupCode">*384*45343#</span>
+                <span class="popup-timer" id="popupTimer">30s</span>
+              </div>
+              <pre class="popup-body" id="popupBody"></pre>
+              <div class="popup-ended hidden" id="popupEnded">— session ended —</div>
+              <div class="popup-input" id="popupInputRow">
+                <input id="replyInput" inputmode="text" placeholder="Reply…" autocomplete="off" />
+                <button id="sendBtn" title="Send">➤</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- soft keys -->
+        <div class="soft-keys">
+          <button class="soft" id="backKey">Back</button>
+          <div class="nav-pad"><span>OK</span></div>
+          <button class="soft" id="cancelKey">Cancel</button>
+        </div>
+
+        <!-- dial pad -->
+        <div class="dialpad" id="dialpad">
+          <button data-k="1"><b>1</b><i>&nbsp;</i></button>
+          <button data-k="2"><b>2</b><i>ABC</i></button>
+          <button data-k="3"><b>3</b><i>DEF</i></button>
+          <button data-k="4"><b>4</b><i>GHI</i></button>
+          <button data-k="5"><b>5</b><i>JKL</i></button>
+          <button data-k="6"><b>6</b><i>MNO</i></button>
+          <button data-k="7"><b>7</b><i>PQRS</i></button>
+          <button data-k="8"><b>8</b><i>TUV</i></button>
+          <button data-k="9"><b>9</b><i>WXYZ</i></button>
+          <button data-k="*"><b>*</b><i>&nbsp;</i></button>
+          <button data-k="0"><b>0</b><i>+</i></button>
+          <button data-k="#"><b>#</b><i>&nbsp;</i></button>
+        </div>
+
+        <!-- call row -->
+        <div class="call-row">
+          <button class="call" id="callBtn" title="Dial / Send">📞</button>
+          <button class="clear" id="clearBtn" title="Delete">⌫</button>
+          <button class="end" id="endBtn" title="End call">⛔</button>
+        </div>
+        <div class="phone-foot">MOVEXA</div>
+      </div>
+    </section>
+
+    <!-- ── Side panel ── -->
+    <section class="side-col">
+      <div class="card">
+        <h2>Session Setup</h2>
+        <label class="lbl">Phone number</label>
+        <input id="phoneNumber" class="field" value="+250788123456" />
+
+        <label class="lbl">USSD service code</label>
+        <div class="chips" id="codeChips"></div>
+        <div class="custom-code">
+          <input id="customCode" class="field" placeholder="Custom e.g. *384*123#" />
+          <button id="addCodeBtn" class="btn ghost">Use</button>
+        </div>
+
+        <label class="lbl">Network delay</label>
+        <div class="chips" id="delayChips">
+          <button class="chip" data-delay="200">Fast</button>
+          <button class="chip active" data-delay="650">Realistic</button>
+          <button class="chip" data-delay="1400">Slow</button>
+        </div>
+
+        <button id="dialQuick" class="btn primary block">📞 Dial <span id="dialQuickCode">*384*45343#</span></button>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Presentation Mode</h2>
+          <span class="muted small">Auto-demo for dissertation</span>
+        </div>
+        <label class="lbl">Scenario</label>
+        <select id="demoScenario" class="field">
+          <option value="0">Check Bus ETA (Kacyiru → CBD)</option>
+          <option value="1">Journey Planner (Nyabugogo → Remera)</option>
+          <option value="2">Service Alerts</option>
+          <option value="3">Fare Information (route 104)</option>
+        </select>
+        <label class="lbl">Speed</label>
+        <div class="chips" id="speedChips">
+          <button class="chip" data-speed="0.6">Slow</button>
+          <button class="chip active" data-speed="1">Normal</button>
+          <button class="chip" data-speed="1.8">Fast</button>
+        </div>
+        <div class="demo-btns">
+          <button id="demoBtn" class="btn primary">▶ Play Demo</button>
+          <button id="demoStopBtn" class="btn ghost">■ Stop</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Session History</h2>
+          <button id="clearHistBtn" class="btn ghost small">Clear</button>
+        </div>
+        <div id="historyList" class="history"></div>
+      </div>
+
+      <div class="card feedback-card">
+        <h2>Quick Feedback</h2>
+        <p class="muted small">Passenger feedback captured via the USSD channel.</p>
+        <div class="stars" id="stars">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+        <textarea id="fbMessage" class="field" rows="2" placeholder="Your feedback about the service…"></textarea>
+        <button id="fbSend" class="btn primary block">Send Feedback</button>
+        <div id="fbStatus" class="muted small"></div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

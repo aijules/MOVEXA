@@ -1,0 +1,13 @@
+{
+  "name": "movexa-ussd-backend",
+  "version": "1.0.0",
+  "description": "Dedicated MOVEXA USSD backend service (zero-dependency, Supabase REST).",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

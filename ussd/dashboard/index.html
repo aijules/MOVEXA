@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOVEXA · USSD Management Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 44 44" fill="none">
+          <path d="M9 33V14.5L22 26.5L35 14.5V33" stroke="white" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9" cy="12" r="3.6" fill="white"/><circle cx="35" cy="12" r="3.6" fill="white"/>
+        </svg>
+      </span>
+      <div>
+        <div class="brand-title">MOVEXA</div>
+        <div class="brand-sub">USSD Management Dashboard</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="pill" id="backendPill"><span class="dot"></span> Backend :6000</span>
+      <a class="link" href="http://localhost:6001" target="_blank">Open Simulator ↗</a>
+      <button class="btn ghost small" id="refreshBtn">↻ Refresh</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Service Analytics</div>
+        <h1>USSD Service Overview</h1>
+        <p class="muted">Live monitoring of the MOVEXA feature-phone USSD channel · auto-refresh 8s</p>
+      </div>
+      <div class="updated" id="updated">—</div>
+    </div>
+
+    <!-- KPI cards -->
+    <section class="kpis" id="kpis"></section>
+
+    <!-- charts row -->
+    <section class="grid-2">
+      <div class="card">
+        <h2>Peak Usage Periods</h2>
+        <p class="muted small">Requests by hour of day (Africa/Kigali)</p>
+        <div class="hours" id="hoursChart"></div>
+      </div>
+      <div class="card">
+        <h2>Menu Option Usage</h2>
+        <p class="muted small">Which services passengers use most</p>
+        <div class="bars" id="menuBars"></div>
+      </div>
+    </section>
+
+    <!-- popular row -->
+    <section class="grid-2">
+      <div class="card">
+        <h2>Popular Routes</h2>
+        <table class="tbl"><thead><tr><th>Route</th><th>Queries</th></tr></thead><tbody id="routesTbl"></tbody></table>
+      </div>
+      <div class="card">
+        <h2>Popular Stops</h2>
+        <table class="tbl"><thead><tr><th>Stop / Area</th><th>Searches</th></tr></thead><tbody id="stopsTbl"></tbody></table>
+      </div>
+    </section>
+
+    <!-- sessions -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Recent Sessions</h2>
+        <span class="muted small" id="sessCount"></span>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Session</th><th>Phone</th><th>Code</th><th>Steps</th><th>Status</th><th>Last activity</th></tr></thead>
+        <tbody id="sessTbl"></tbody>
+      </table>
+    </section>
+
+    <!-- logs + feedback -->
+    <section class="grid-2">
+      <div class="card">
+        <h2>Live Request Log</h2>
+        <table class="tbl"><thead><tr><th>Time</th><th>Phone</th><th>Input</th><th>Type</th></tr></thead><tbody id="logsTbl"></tbody></table>
+      </div>
+      <div class="card">
+        <h2>Passenger Feedback</h2>
+        <div id="feedbackList" class="feedback"></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      MOVEXA Smart Public Transport · USSD ecosystem · Backend :6000 · Simulator :6001 · Dashboard :6002
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

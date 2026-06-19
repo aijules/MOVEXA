@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+dist/
+build/
+.vite/
+.cache/
+.DS_Store
+screenshots/
+memory/
+prompts/
+.claude/
+*.log

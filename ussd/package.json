@@ -1,0 +1,13 @@
+{
+  "name": "movexa-ussd-ecosystem",
+  "version": "1.0.0",
+  "description": "Dedicated MOVEXA USSD ecosystem: backend (:6000), simulator (:6001), dashboard (:6002). Zero dependencies.",
+  "private": true,
+  "scripts": {
+    "start": "node start-all.js",
+    "backend": "node backend/server.js",
+    "simulator": "node simulator/server.js",
+    "dashboard": "node dashboard/server.js"
+  },
+  "engines": { "node": ">=18" }
+}

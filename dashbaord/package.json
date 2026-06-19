@@ -1,0 +1,22 @@
+{
+  "name": "movexa-admin-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Movexa Admin dashboard for Excel-backed public transport operations.",
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
+    "dev:backend": "npm run dev --workspace backend",
+    "dev:frontend": "npm run dev --workspace frontend",
+    "build": "npm run build --workspace frontend",
+    "start": "npm run start --workspace backend",
+    "seed:admin": "npm run seed:admin --workspace backend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

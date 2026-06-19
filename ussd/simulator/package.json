@@ -1,0 +1,11 @@
+{
+  "name": "movexa-ussd-simulator",
+  "version": "1.0.0",
+  "description": "MOVEXA browser-based USSD phone simulator (static, zero-dependency).",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": { "node": ">=18" }
+}
