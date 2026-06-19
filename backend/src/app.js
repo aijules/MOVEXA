@@ -9,7 +9,7 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(cors({
+const corsOptions = {
   origin(origin, callback) {
     // Non-browser clients have no Origin. In local development, keep the
     // existing convenience of accepting localhost tools on any port.
@@ -19,7 +19,14 @@ app.use(cors({
     return callback(new Error('CORS origin not allowed'));
   },
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+};
+
+// Applied before every route. The cors package answers OPTIONS preflight
+// requests here so they never fall through to a route or the 404 handler.
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 if (NODE_ENV !== 'test') app.use(morgan('dev'));

@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const defaultCorsOrigins = [
   'https://movexa-nu.vercel.app',
-  'https://movexa-41tyhj74r-movexa-app.vercel.app',
+  'https://movexa-4ltyhj74r-movexa-app.vercel.app',
 ];
 const configuredCorsOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URLS || process.env.CLIENT_URL || '')
   .split(',').map(value => value.trim()).filter(Boolean);
