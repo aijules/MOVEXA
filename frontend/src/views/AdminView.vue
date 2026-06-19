@@ -18,7 +18,7 @@
 
       <div v-else-if="!health" class="empty-state card">
         <p class="text-muted text-center">Could not connect to backend. Make sure the server is running.</p>
-        <p class="text-muted text-center" style="font-size:12px;margin-top:8px">Expected: http://localhost:5000/api/health</p>
+        <p class="text-muted text-center" style="font-size:12px;margin-top:8px">Check the configured MOVEXA backend at /api/health.</p>
       </div>
 
       <div v-else>

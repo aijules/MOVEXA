@@ -131,12 +131,25 @@
         </button>
       </TransitionGroup>
 
+      <!-- API/network failure -->
+      <div v-else-if="searchError" class="empty-state search-error-state">
+        <div class="empty-icon">⚠️</div>
+        <p><strong>Search service unavailable</strong></p>
+        <p class="text-muted">{{ searchError }}</p>
+        <button class="btn btn-outline" style="margin-top:12px" @click="runSearch">Try again</button>
+      </div>
+
       <!-- Empty -->
       <div v-else class="empty-state">
         <div class="empty-icon">🔍</div>
         <p>No matches for <strong>"{{ searchQ }}"</strong></p>
         <p class="text-muted">Try a stop name or a nearby address</p>
       </div>
+    </div>
+
+    <div v-if="journeyStore.error" class="planner-error" role="alert">
+      <strong>Could not find routes</strong>
+      <span>{{ journeyStore.error }}</span>
     </div>
 
     <!-- CTA -->
@@ -171,6 +184,7 @@ const searchQ     = ref('');
 const inputRef    = ref(null);
 const loading     = ref(false);
 const combined    = ref([]);       // merged stops + geocoded places
+const searchError = ref('');
 const timeMode    = ref(journeyStore.timeMode);
 const timeVal     = ref(journeyStore.time);
 const pendingSlot = ref(null);     // 'home' | 'work' while choosing a place to save
@@ -180,6 +194,7 @@ let debounceTimer;
 function onInput() {
   clearTimeout(debounceTimer);
   combined.value = [];
+  searchError.value = '';
   if (searchQ.value.length < 2) return;
   loading.value = true;
   debounceTimer = setTimeout(runSearch, 280);
@@ -188,6 +203,7 @@ function onInput() {
 async function runSearch() {
   const q = searchQ.value.trim();
   if (q.length < 2) { loading.value = false; return; }
+  searchError.value = '';
   try {
     // Query bus stops and geocoded places in parallel; stops rank first.
     const [stopsRes, placesRes] = await Promise.allSettled([
@@ -210,8 +226,12 @@ async function runSearch() {
       _key: `place_${p.placeId}`,
     }));
     combined.value = [...stops, ...placeItems];
-  } catch {
+    if (stopsRes.status === 'rejected' && placesRes.status === 'rejected') {
+      searchError.value = 'The deployed backend could not be reached. Please wait for it to wake up, then retry.';
+    }
+  } catch (error) {
     combined.value = [];
+    searchError.value = error?.message || 'The search service could not be reached.';
   } finally {
     loading.value = false;
   }
@@ -255,7 +275,7 @@ function assign(ep) {
 }
 function select(item) { assign(item); }
 
-function resetSearch() { searchQ.value = ''; combined.value = []; }
+function resetSearch() { searchQ.value = ''; combined.value = []; searchError.value = ''; }
 
 function pickSaved(slot) {
   const p = places[slot];
@@ -339,6 +359,8 @@ onMounted(() => nextTick(() => inputRef.value?.focus()));
 .search-icon { width: 18px; height: 18px; color: var(--color-muted); flex-shrink: 0; }
 .search-input { flex: 1; border: none; outline: none; background: transparent; font-size: 15px; font-family: inherit; padding: 14px 0; color: var(--color-text); }
 .search-input::placeholder { color: var(--color-muted); }
+.search-error-state { padding: 24px 16px; }
+.planner-error { margin: 8px 16px 86px; padding: 12px 14px; border: 1px solid #FCA5A5; background: #FEF2F2; color: #991B1B; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
 
 /* Quick picks */
 .quick-grid { display: flex; gap: 8px; padding: 6px 0 10px; flex-wrap: wrap; }

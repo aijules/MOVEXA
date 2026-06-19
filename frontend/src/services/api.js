@@ -4,7 +4,8 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 15000,
+  // Render free instances can take tens of seconds to wake from a cold start.
+  timeout: import.meta.env.PROD ? 60000 : 15000,
   headers: { 'Content-Type': 'application/json' },
 });
 

@@ -1,7 +1,12 @@
 require('dotenv').config();
 
-const clientUrls = (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:5173')
+const defaultCorsOrigins = [
+  'https://movexa-nu.vercel.app',
+  'https://movexa-41tyhj74r-movexa-app.vercel.app',
+];
+const configuredCorsOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URLS || process.env.CLIENT_URL || '')
   .split(',').map(value => value.trim()).filter(Boolean);
+const clientUrls = [...new Set([...defaultCorsOrigins, ...configuredCorsOrigins])];
 
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
@@ -9,6 +14,7 @@ module.exports = {
   MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/movexa',
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
   CLIENT_URLS: clientUrls,
+  CORS_ORIGINS: clientUrls,
   JWT_SECRET: process.env.JWT_SECRET || 'movexa-dev-secret',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
 

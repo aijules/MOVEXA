@@ -11,22 +11,12 @@ export default defineConfig(({ mode }) => {
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'icons/*.png'],
-      manifest: {
-        name: 'MoveXa - Smart Transport',
-        short_name: 'MoveXa',
-        description: 'Real-time public transport app for Kigali',
-        theme_color: '#0EA5A3',
-        background_color: '#F8FAFC',
-        display: 'standalone',
-        orientation: 'portrait',
-        start_url: '/',
-        icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-        ],
-      },
+      includeAssets: ['favicon.svg', 'icons/*.png', 'manifest.webmanifest'],
+      manifest: false,
       workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {

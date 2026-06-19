@@ -38,3 +38,20 @@ ussd/                    npm run build
 Frontend artifacts are written to each frontend's `dist` directory. The USSD
 command creates `ussd/dist` with the backend, simulator, dashboard, and production
 environment template. Never commit real service-role, JWT, or payment credentials.
+
+## If the deployed app opens but has no routes or search results
+
+The passenger frontend is running, but it cannot reach the backend. Deploy the
+`backend` service first, then set these variables on the frontend hosting service
+before rebuilding:
+
+```text
+VITE_API_BASE_URL=https://movexa-ogo5.onrender.com
+VITE_SOCKET_URL=https://movexa-ogo5.onrender.com
+```
+
+Do not use `localhost` in a production frontend variable. Variables prefixed
+with `VITE_` are embedded during `npm run build`, so changing them requires a new
+frontend deployment. For an installed iOS PWA, close and reopen it afterward.
+If an old build persists, remove the home-screen app, clear that site's Safari
+data, and install it again.

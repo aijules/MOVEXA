@@ -3,7 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const { CLIENT_URLS, NODE_ENV } = require('./config/env');
+const { CORS_ORIGINS, NODE_ENV } = require('./config/env');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(cors({
   origin(origin, callback) {
     // Non-browser clients have no Origin. In local development, keep the
     // existing convenience of accepting localhost tools on any port.
-    if (!origin || CLIENT_URLS.includes(origin) || (NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))) {
+    if (!origin || CORS_ORIGINS.includes(origin) || (NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))) {
       return callback(null, true);
     }
     return callback(new Error('CORS origin not allowed'));

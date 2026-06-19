@@ -69,7 +69,10 @@ export const useJourneyStore = defineStore('journey', () => {
         try { usePlacesStore().addHistory(origin.value, destination.value); } catch { /* ignore */ }
       }
     } catch (e) {
-      error.value    = e.message;
+      const networkFailure = /network|timeout|failed to fetch|cors/i.test(e.message || '');
+      error.value    = networkFailure
+        ? 'MOVEXA could not reach the route service. The server may be waking up—wait a moment and try again.'
+        : (e.message || 'Journey search failed. Please try again.');
       searched.value = true;
     } finally {
       loading.value = false;
