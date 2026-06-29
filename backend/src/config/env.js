@@ -5,10 +5,20 @@ const defaultCorsOrigins = [
   'https://movexa-ogo5.onrender.com',
   'https://movexa-nu.vercel.app',
   'https://movexa-4ltyhj74r-movexa-app.vercel.app',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5174',
 ];
 const configuredCorsOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URLS || process.env.CLIENT_URL || '')
   .split(',').map(value => value.trim()).filter(Boolean);
 const clientUrls = [...new Set([...defaultCorsOrigins, ...configuredCorsOrigins])];
+const netlifyOriginPattern = /^https:\/\/[a-z0-9-]+\.netlify\.app$/i;
+
+function isCorsOriginAllowed(origin) {
+  if (!origin) return true;
+  return clientUrls.includes(origin) || netlifyOriginPattern.test(origin);
+}
 
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
@@ -17,6 +27,7 @@ module.exports = {
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
   CLIENT_URLS: clientUrls,
   CORS_ORIGINS: clientUrls,
+  isCorsOriginAllowed,
   JWT_SECRET: process.env.JWT_SECRET || 'movexa-dev-secret',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
 

@@ -2,7 +2,7 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./app');
-const { PORT, CORS_ORIGINS, NODE_ENV } = require('./config/env');
+const { PORT, NODE_ENV, isCorsOriginAllowed } = require('./config/env');
 const simulation = require('./services/simulation.service');
 const { startPaymentPoller } = require('./services/paymentPoller.service');
 
@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin(origin, callback) {
-      if (!origin || CORS_ORIGINS.includes(origin) || (NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))) {
+      if (isCorsOriginAllowed(origin) || (NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))) {
         return callback(null, true);
       }
       return callback(new Error('Socket origin not allowed'));
