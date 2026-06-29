@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const defaultCorsOrigins = [
+  'https://movexa-aijules.netlify.app',
+  'https://movexa-ogo5.onrender.com',
   'https://movexa-nu.vercel.app',
   'https://movexa-4ltyhj74r-movexa-app.vercel.app',
 ];

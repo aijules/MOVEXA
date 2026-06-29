@@ -8,6 +8,7 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 const app = express();
 
+app.set('trust proxy', 1);
 app.use(helmet({ crossOriginResourcePolicy: false }));
 const corsOptions = {
   origin(origin, callback) {
